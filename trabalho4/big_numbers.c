@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+boolean bignumber_atribui_sinal(BIGNUMBER *bigNumber_1, BIGNUMBER *bigNumber_2);
+
 struct BigNumber
 {
     NODE *_inicio;
@@ -102,8 +104,13 @@ boolean bignumber_add_numero(BIGNUMBER *bigNumber, char *numero)
             slice(numeroAbsoluto, trecho, 0, resto);
             bignumber_append(bigNumber, atoi(trecho));
         }
+
+        free(numeroAbsoluto);
         free(trecho);
+        return TRUE;
     }
+
+    free(numeroAbsoluto);
     return FALSE;
 }
 
@@ -113,6 +120,7 @@ BIGNUMBER *bignumber_adicao(BIGNUMBER *bigNumber_1, BIGNUMBER *bigNumber_2)
     NODE *node_1;
     NODE *node_2;
     boolean maiorQueMaxSize = FALSE;
+    boolean hasDifferentSigns = FALSE;
 
     if (bigNumber_1 != NULL && bigNumber_2 != NULL)
     {
@@ -121,13 +129,17 @@ BIGNUMBER *bignumber_adicao(BIGNUMBER *bigNumber_1, BIGNUMBER *bigNumber_2)
         node_1 = bigNumber_1 -> _inicio;
         node_2 = bigNumber_2 -> _inicio;
 
+        hasDifferentSigns = (bigNumber_1 -> _isNegative) != (bigNumber_2 -> _isNegative);
+
+        bigNumberResultado -> _isNegative = bignumber_atribui_sinal(bigNumber_1, bigNumber_2);
+
         while (node_1 != NULL || node_2 != NULL) {
             if (!maiorQueMaxSize) {
                 bignumber_append(bigNumberResultado, 0);
             }
 
             maiorQueMaxSize =
-                node_adicao(node_1, node_2, bigNumberResultado -> _end);
+                node_adicao(node_1, node_2, bigNumberResultado -> _end, hasDifferentSigns);
 
             node_1 != NULL ? node_1 = node_get_link(node_1) : 0;
             node_2 != NULL ? node_2 = node_get_link(node_2) : 0;
@@ -143,14 +155,34 @@ BIGNUMBER *bignumber_adicao(BIGNUMBER *bigNumber_1, BIGNUMBER *bigNumber_2)
     return NULL;
 }
 
-boolean bignumber_maior_que(BIGNUMBER *bigNumber_1, BIGNUMBER * bigNumber_2){
+boolean bignumber_maior_que(BIGNUMBER *bigNumber_1, BIGNUMBER * bigNumber_2)
+{
      if (bigNumber_1 != NULL && bigNumber_2 != NULL) {
 
          if ( (bigNumber_1 -> _size) == (bigNumber_2 -> _size) ) {
-             return node_cadeia_maior(bigNumber_1 -> _inicio, bigNumber_2 -> _inicio);
+
+             if (bigNumber_1 ->_isNegative == TRUE && bigNumber_2 -> _isNegative == TRUE) {
+                 return !node_cadeia_maior(bigNumber_1 -> _inicio, bigNumber_2 -> _inicio);
+             } else if (bigNumber_1 ->_isNegative == FALSE && bigNumber_2 -> _isNegative == FALSE) {
+                 return node_cadeia_maior(bigNumber_1 -> _inicio, bigNumber_2 -> _inicio);
+             }
+
+             else if (bigNumber_1 ->_isNegative == FALSE && bigNumber_2 -> _isNegative == TRUE) {
+                return TRUE;
+             } else if (bigNumber_1 ->_isNegative == TRUE && bigNumber_2 -> _isNegative == FALSE) {
+                return FALSE;
+             }
 
          } else if ( (bigNumber_1 -> _size) > (bigNumber_2 -> _size) ) {
-             return TRUE;
+
+             if (bigNumber_1 ->_isNegative == FALSE && bigNumber_2 -> _isNegative == FALSE) {
+                 return TRUE;
+             } else if (bigNumber_1 ->_isNegative == FALSE && bigNumber_2 -> _isNegative == TRUE)  {
+                 return TRUE;
+
+             } else {
+                 return FALSE;
+             }
          }
         return FALSE;
      }
@@ -161,7 +193,9 @@ boolean bignumber_maior_que(BIGNUMBER *bigNumber_1, BIGNUMBER * bigNumber_2){
 
 boolean bignumber_igual(BIGNUMBER *bigNumber_1, BIGNUMBER *bigNumber_2){
     if (bigNumber_1 != NULL && bigNumber_2 != NULL) {
-        if ( (bigNumber_1 -> _size) == (bigNumber_2 -> _size) ) {
+        if ( (bigNumber_1 -> _size) == (bigNumber_2 -> _size) &&
+            (bigNumber_1 ->_isNegative == bigNumber_2 -> _isNegative)) {
+
             return node_cadeia_igual(bigNumber_1 -> _inicio,
                                 bigNumber_2 -> _inicio);
         }
@@ -190,6 +224,24 @@ boolean bignumber_menor_que(BIGNUMBER *bigNumber_1, BIGNUMBER * bigNumber_2){
 }
 
 
+boolean bignumber_atribui_sinal(BIGNUMBER *bigNumber_1, BIGNUMBER *bigNumber_2)
+{
+    if ( (bigNumber_1 -> _isNegative == TRUE) && (bigNumber_2 -> _isNegative == FALSE) ) {
+        if (bignumber_maior_que(bigNumber_2, bigNumber_1)){
+            return FALSE;
+        }
+            return TRUE;
+    } else if ( (bigNumber_1 -> _isNegative == FALSE) && (bigNumber_2 -> _isNegative == TRUE) ){
+        if (bignumber_maior_que(bigNumber_1, bigNumber_2)){
+            return FALSE;
+        }
+        return TRUE;
+    } else if ( (bigNumber_1 -> _isNegative == TRUE) && (bigNumber_2 -> _isNegative == TRUE) ) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
 
 boolean bignumber_print(BIGNUMBER *bigNumber)
 {

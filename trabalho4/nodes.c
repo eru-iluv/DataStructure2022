@@ -8,6 +8,7 @@
 int NODE_SIZE = 4;     // Numeros de dígitos em um node
 int MAX_TRECHO = 10000; // Tamanaho máximo do trecho de um node. Manter sempre como 10**NODE_SIZE.
 boolean coloca_os_zeros_a_esquerda(NODE* node);
+int node_atribui_trecho_resultado(NODE* node_1, NODE* node_2, NODE* nodeResultado, boolean hasDifferentSigns);
 
 struct Node{
     int _trecho;
@@ -82,21 +83,14 @@ NODE* node_get_link(NODE* node)
     return NULL;
 }
 
-boolean node_adicao(NODE* node_1, NODE* node_2, NODE* nodeResultado)
+boolean node_adicao(NODE* node_1, NODE* node_2, NODE* nodeResultado, boolean hasDifferentSigns)
 {
     int trechoResultado;
-    if (node_1 == NULL && node_2 != NULL) {
-        trechoResultado = node_2 -> _trecho
-            + nodeResultado -> _trecho;
-    } else if (node_1 != NULL && node_2 == NULL) {
-        trechoResultado = node_1 -> _trecho
-            + nodeResultado -> _trecho;
-    } else if (node_1 == NULL && node_2 == NULL) {
+    if (node_1 == NULL && node_2 == NULL) {
         printf("\nNODE ERROR: Não podemos somar dois termos nulos bobinho!\n");
         return FALSE;
     } else {
-        trechoResultado = node_1 -> _trecho + node_2 -> _trecho
-            + nodeResultado -> _trecho;
+        trechoResultado = node_atribui_trecho_resultado(node_1, node_2, nodeResultado, hasDifferentSigns);
     }
 
     if (trechoResultado >= MAX_TRECHO) {
@@ -220,4 +214,34 @@ boolean coloca_os_zeros_a_esquerda(NODE* node)
             print_n_times("0", NODE_SIZE - 3);
         }
     return TRUE;
+}
+
+int node_atribui_trecho_resultado(NODE* node_1, NODE* node_2, NODE* nodeResultado, boolean hasDifferentSigns){
+    if (node_1 == NULL && node_2 != NULL) {
+
+        if(!hasDifferentSigns){
+            return node_2 -> _trecho
+                + nodeResultado -> _trecho;
+        } else {
+            return  abs(node_2 -> _trecho);
+        }
+
+    } else if (node_1 != NULL && node_2 == NULL) {
+
+        if (!hasDifferentSigns){
+            return node_1 -> _trecho
+                + nodeResultado -> _trecho;
+        } else {
+            return abs(node_1 -> _trecho);
+        }
+
+    } else {
+
+        if (!hasDifferentSigns) {
+            return node_1 -> _trecho + node_2 -> _trecho
+                + nodeResultado -> _trecho;
+        } else {
+            return abs(node_1 -> _trecho - node_2 -> _trecho);
+        }
+    }
 }
