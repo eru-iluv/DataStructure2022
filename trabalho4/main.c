@@ -16,8 +16,8 @@ int main()
     bigNumber_2 = bignumber_criar();
     // node_print(node_1);
     // int numeroTamanho = strlen("12345678");
-    bignumber_add_numero(bigNumber_1, "131121");
-    bignumber_add_numero(bigNumber_2, "131120");
+    bignumber_add_numero(bigNumber_1, "-120");
+    bignumber_add_numero(bigNumber_2, "-5000");
     bigNumberResultado = bignumber_adicao(bigNumber_2, bigNumber_1);
     bignumber_print(bigNumberResultado);
     print_boolean(bignumber_maior_que(bigNumber_1, bigNumber_2));

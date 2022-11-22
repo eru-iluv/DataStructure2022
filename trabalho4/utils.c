@@ -54,8 +54,10 @@ boolean starts_with_a_minus(char *str)
 
     if (!strcmp(firstChar, "-"))
     {
+        free(firstChar);
         return TRUE;
     }
+    free(firstChar);
     return FALSE;
 }
 
