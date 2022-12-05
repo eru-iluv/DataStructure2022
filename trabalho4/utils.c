@@ -47,27 +47,20 @@ int power(int base, int expoente)
 boolean starts_with_a_minus(char *str)
 {
 
-    char* firstChar;
-
-    firstChar = (char*) malloc(2*sizeof(char));
-    slice(str, firstChar, 0, 1);
-
-    if (!strcmp(firstChar, "-"))
+    if (str[0] == '-')
     {
-        free(firstChar);
         return TRUE;
     }
-    free(firstChar);
     return FALSE;
 }
 
 void print_boolean(boolean var)
 {
     if (var) {
-        printf("\nTRUE");
+        printf("True\n");
     }
     else {
-        printf("\nFALSE");
+        printf("False\n");
     }
 }
 

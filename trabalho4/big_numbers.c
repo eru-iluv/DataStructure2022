@@ -72,7 +72,7 @@ boolean bignumber_add_numero(BIGNUMBER *bigNumber, char *numero)
     int numeroIteracoes;
     int resto;
     char *trecho = (char *)malloc(NODE_SIZE * sizeof(char));
-    char *numeroAbsoluto = (char *)malloc(strlen(numero) * sizeof(char));
+    char *numeroAbsoluto = (char *) malloc(strlen(numero) * sizeof(char));
 
     if (bigNumber != NULL)
     {
@@ -80,12 +80,16 @@ boolean bignumber_add_numero(BIGNUMBER *bigNumber, char *numero)
         if (starts_with_a_minus(numero))
         {
             bigNumber->_isNegative = TRUE;
-            slice(numero, numeroAbsoluto, 1, strlen(numero));
+            if (strlen(numero) >= 16)
+                slice(numero, numeroAbsoluto, 2, strlen(numero) + 1);
+            else
+                slice(numero, numeroAbsoluto, 1, strlen(numero));
         }
         else
         {
-            slice(numero, numeroAbsoluto, 0, strlen(numero));
+            strcpy(numeroAbsoluto, numero);
         }
+
 
         numeroTamanho = strlen(numeroAbsoluto);
         numeroIteracoes = numeroTamanho / NODE_SIZE;
@@ -95,6 +99,7 @@ boolean bignumber_add_numero(BIGNUMBER *bigNumber, char *numero)
         {
             slice(numeroAbsoluto, trecho, (i - 1) * NODE_SIZE + resto,
                   i * NODE_SIZE + resto);
+
             bignumber_append(bigNumber, atoi(trecho));
         }
         if (resto != 0)
@@ -183,8 +188,11 @@ boolean bignumber_maior_que(BIGNUMBER *bigNumber_1, BIGNUMBER * bigNumber_2)
              } else {
                  return FALSE;
              }
+         } else if ( ((bigNumber_1 -> _size) < (bigNumber_2 -> _size)) && bigNumber_2 -> _isNegative ) {
+             return TRUE;
          }
-        return FALSE;
+
+         return FALSE;
      }
 
      printf("\nERRO BIGNUMBER: Não podemos comparar um bignumber nulo\n");
@@ -251,6 +259,7 @@ boolean bignumber_print(BIGNUMBER *bigNumber)
         inicio = bigNumber->_inicio;
         bigNumber->_isNegative == TRUE ? printf("-") : 0;
         node_print(inicio);
+        printf("\n");
         return TRUE;
     }
     return FALSE;

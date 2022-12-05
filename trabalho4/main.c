@@ -7,27 +7,55 @@
 
 int main()
 {
-    BIGNUMBER *bigNumber_1;
-    BIGNUMBER *bigNumber_2;
-    BIGNUMBER *bigNumberResultado;
-    // char* resenha;
-    // resenha = (char *) malloc(100*sizeof(char));
-    bigNumber_1 = bignumber_criar();
-    bigNumber_2 = bignumber_criar();
-    // node_print(node_1);
-    // int numeroTamanho = strlen("12345678");
-    bignumber_add_numero(bigNumber_1, "-120");
-    bignumber_add_numero(bigNumber_2, "-5000");
-    bigNumberResultado = bignumber_adicao(bigNumber_2, bigNumber_1);
-    bignumber_print(bigNumberResultado);
-    print_boolean(bignumber_maior_que(bigNumber_1, bigNumber_2));
-    bignumber_apagar(&bigNumber_1);
-    bignumber_apagar(&bigNumber_2);
-    bignumber_apagar(&bigNumberResultado);
-    // slice("12345678", resenha, 4, 8);
-    // node_add_trecho(node_1, atoi(resenha));
-    // node_add_trecho(node_2, atoi(resenha));
-    // node_add_link(node_1, node_2);
-    // node_print(node_1);
-    // bignumber_add(bigNumber_1, bigNumber_2);
+    char *ponteiro;
+    int numeroComandos;
+
+    ponteiro = read_line();
+    numeroComandos = atoi(ponteiro);
+    free(ponteiro);
+
+
+    for (int i = 0; i < numeroComandos; i++) {
+       char* operacao;
+
+       BIGNUMBER* bigNumber_1 = bignumber_criar();
+       char* numero_1;
+
+
+       BIGNUMBER* bigNumber_2 = bignumber_criar();
+       char* numero_2;
+
+       ponteiro = read_line();
+
+
+       operacao = strtok(ponteiro, " ");
+
+       numero_1 = strtok(NULL, " ");
+       numero_2 = strtok(NULL, " ");
+
+       bignumber_add_numero(bigNumber_1, numero_1);
+       bignumber_add_numero(bigNumber_2, numero_2);
+
+       printf("Resultado :: ");
+
+       if (strcmp(operacao, "soma") == 0) {
+            bignumber_print(bignumber_adicao(bigNumber_1, bigNumber_2));
+        }
+       else if(strcmp(operacao, "maior") == 0) {
+            print_boolean(bignumber_maior_que(bigNumber_1, bigNumber_2));
+       }
+       else if (strcmp(operacao, "menor") == 0)
+       {
+           print_boolean(bignumber_menor_que(bigNumber_1, bigNumber_2));
+       }
+       else if (strcmp(operacao, "igual") == 0)
+       {
+           print_boolean(bignumber_igual(bigNumber_1, bigNumber_2));
+       }
+
+       bignumber_apagar(&bigNumber_1);
+       bignumber_apagar(&bigNumber_2);
+    }
+
+    return 0;
 }

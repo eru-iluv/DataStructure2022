@@ -11,4 +11,5 @@ BIGNUMBER* bignumber_adicao(BIGNUMBER *bigNumber_1, BIGNUMBER *bigNumber_2);
 boolean bignumber_igual(BIGNUMBER *bigNumber_1, BIGNUMBER *bigNumber_2);
 boolean bignumber_print(BIGNUMBER *bigNumber);
 boolean bignumber_maior_que(BIGNUMBER *bigNumber_1, BIGNUMBER * bigNumber_2);
+boolean bignumber_menor_que(BIGNUMBER *bigNumber_1, BIGNUMBER *bigNumber_2);
 #endif

@@ -1,7 +1,6 @@
 #include "big_numbers.h"
 #include "utils.h"
 #include "nodes.h"
-#include <bits/types/cookie_io_functions_t.h>
 #include <stdio.h>
 #include <stdlib.h>
 
