@@ -55,15 +55,9 @@ boolean cliente_apagar(CLIENTE **cliente)
     return FALSE;
 }
 
-// retorna true se o cpf de cliente1 é maior que o de cliente2 e false
-// no caso contrário
-boolean cliente_compara_cpfs(CLIENTE* cliente1, CLIENTE* cliente2)
+BIGNUMBER* cliente_get_cpf(CLIENTE* cliente)
 {
-    if (cliente1 != NULL && cliente2 != NULL) {
-        return bignumber_maior_que(cliente1 -> _cpf, cliente2 -> _cpf);
-    }
-
-    return ERRO_GENERICO;
+    return cliente -> _cpf;
 }
 
 void print_cliente(CLIENTE* cliente)
