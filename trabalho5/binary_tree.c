@@ -2,22 +2,26 @@
 #include "cliente.h"
 #include "binary_tree.h"
 #include "utils.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 
-struct BinaryTree
+struct BinaryTreeNode
 {
-    BT* _galhoEsquerdo;
-    BT* _galhoDireito;
+    BT_NODE* _galhoEsquerdo;
+    BT_NODE* _galhoDireito;
     CLIENTE* _cliente;
 };
 
-
-
-BT* bt_criar(CLIENTE* cliente)
+struct BinaryTree
 {
-    BT* binaryTree;
-    binaryTree = (BT*) malloc(sizeof(BT));
+    BT_NODE* _raiz;
+};
+
+BT_NODE* bt_node_criar(CLIENTE* cliente)
+{
+    BT_NODE* binaryTree;
+    binaryTree = (BT_NODE*) malloc(sizeof(BT_NODE));
 
     if (binaryTree != NULL && cliente != NULL) {
         binaryTree -> _galhoDireito = NULL;
@@ -30,18 +34,19 @@ BT* bt_criar(CLIENTE* cliente)
     return NULL;
 }
 
-boolean bt_apagar(BT** binaryTree)
+boolean bt_node_apagar(BT_NODE** binaryTree)
 {
 
     if (*binaryTree != NULL) {
         if ((*binaryTree) -> _galhoDireito != NULL ) {
-            binarytree_apagar( &((*binaryTree) -> _galhoDireito) );
+            bt_node_apagar( &((*binaryTree) -> _galhoDireito) );
         }
 
         if ((*binaryTree) -> _galhoEsquerdo != NULL) {
-            binarytree_apagar( &((*binaryTree) -> _galhoEsquerdo) );
+            bt_node_apagar( &((*binaryTree) -> _galhoEsquerdo) );
         }
 
+        cliente_apagar(&(*binaryTree) -> _cliente);
         free(*binaryTree);
         *binaryTree = NULL;
         return TRUE;
@@ -49,8 +54,8 @@ boolean bt_apagar(BT** binaryTree)
 
     return FALSE;
 }
-
-void bt_preordem(BT* binaryTree){
+void bt_preordem(BT_NODE* binaryTree)
+{
     if (binaryTree != NULL) {
         BIGNUMBER* cpf = cliente_get_cpf(binaryTree -> _cliente);
         bignumber_print(cpf);
@@ -61,7 +66,7 @@ void bt_preordem(BT* binaryTree){
 
 }
 
-boolean galho_apagar(BT** binaryTree)
+boolean galho_apagar(BT_NODE** binaryTree)
 {
     if (*binaryTree != NULL) {
         free(*binaryTree);
@@ -74,7 +79,7 @@ boolean galho_apagar(BT** binaryTree)
 
 
 
-boolean _bt_insere_arvore_cliente(BT* binaryTree, BT* arvoreCliente)
+boolean bt_node_insere_cliente(BT_NODE* binaryTree, BT_NODE* arvoreCliente)
 {
     BIGNUMBER* nodeAtualCpf;
     BIGNUMBER* clienteCpf;
@@ -85,11 +90,11 @@ boolean _bt_insere_arvore_cliente(BT* binaryTree, BT* arvoreCliente)
         clienteCpf =  cliente_get_cpf(arvoreCliente -> _cliente);
 
         if (bignumber_maior_que(nodeAtualCpf, clienteCpf)) {
-            return _bt_insere_arvore_cliente(binaryTree -> _galhoEsquerdo, arvoreCliente);
+            return bt_node_insere_cliente(binaryTree -> _galhoEsquerdo, arvoreCliente);
         } else if (bignumber_igual(nodeAtualCpf, clienteCpf)) {
             return FALSE;
         } else {
-            return _bt_insere_arvore_cliente(binaryTree -> _galhoDireito, arvoreCliente);
+            return bt_node_insere_cliente(binaryTree -> _galhoDireito, arvoreCliente);
         }
     }
 
@@ -102,73 +107,115 @@ boolean _bt_insere_arvore_cliente(BT* binaryTree, BT* arvoreCliente)
 }
 
 
-boolean bt_insere_arvore_cliente(BT* binaryTree, BT* arvoreCliente){
-    boolean returnValue;
-
-    returnValue = _bt_insere_arvore_cliente(binaryTree, arvoreCliente);
-    bt_preordem(binaryTree);
-
-    return returnValue;
-}
-
-boolean _bt_remove_cliente(BT* binaryTree, CLIENTE* cliente)
+boolean _bt_node_remove_cliente(BT_NODE* binaryTree, BIGNUMBER* cpf)
 {
     BIGNUMBER* nodeAtualCpf;
-    BIGNUMBER* clienteCpf;
-    BT* galhoEsquerdo;
-    BT* galhoDireito;
+    BT_NODE* galhoEsquerdo;
+    BT_NODE* galhoDireito;
 
-    if (binaryTree != NULL && binaryTree -> _cliente != NULL && cliente != NULL) {
+    if (binaryTree != NULL && binaryTree -> _cliente != NULL && cpf != NULL) {
 
         nodeAtualCpf = cliente_get_cpf(binaryTree -> _cliente);
 
         // A ordem pode parecer estranha
         // mas se deve ao fato de bignumber_menor_que basicamente chamar
         // essas duas funções
-        if (bignumber_maior_que(nodeAtualCpf, clienteCpf)) {
-            return _bt_remove_cliente(binaryTree -> _galhoEsquerdo, cliente);
+        if (bignumber_maior_que(nodeAtualCpf, cpf)) {
+            return _bt_node_remove_cliente(binaryTree -> _galhoEsquerdo, cpf);
 
-        } else if (bignumber_igual(nodeAtualCpf, clienteCpf)) {
+        } else if (bignumber_igual(nodeAtualCpf, cpf)) {
 
             galhoEsquerdo = binaryTree -> _galhoEsquerdo;
             galhoDireito = binaryTree -> _galhoDireito;
             galho_apagar(&binaryTree);
 
-            *binaryTree = *galhoDireito;
-            _bt_insere_arvore_cliente(binaryTree, galhoEsquerdo);
+            binaryTree = galhoDireito;
+            bt_node_insere_cliente(binaryTree, galhoEsquerdo);
 
         } else {
-            _bt_remove_cliente(binaryTree -> _galhoDireito, cliente);
+            _bt_node_remove_cliente(binaryTree -> _galhoDireito, cpf);
         }
     }
     return FALSE;
 }
 
 
-boolean bt_remove_cliente(BT* binaryTree, CLIENTE* cliente)
+void _bt_node_busca(BT_NODE* binaryTree, BIGNUMBER* cpf)
+{
+    CLIENTE* clienteAtual;
+    if (binaryTree != NULL && cpf != NULL) {
+        clienteAtual = binaryTree -> _cliente ;
+        if (bignumber_igual( cliente_get_cpf(clienteAtual), cpf) )
+        {
+            print_cliente(clienteAtual);
+        } else if (bignumber_maior_que( cliente_get_cpf(clienteAtual), cpf)) {
+            _bt_node_busca(binaryTree -> _galhoDireito, cpf);
+        } else {
+            _bt_node_busca(binaryTree -> _galhoEsquerdo, cpf);
+        }
+    } else {
+        printf("Pessoa nao encontrada.\n");
+    }
+}
+
+
+
+BT* bt_criar()
+{
+    BT* binaryTree = (BT*) malloc(sizeof(BT));
+    binaryTree -> _raiz = NULL;
+    return binaryTree;
+}
+
+boolean bt_apagar(BT **binaryTree)
+{
+    return bt_node_apagar(&(*binaryTree) -> _raiz);
+}
+
+
+boolean bt_insere_cliente(BT* binaryTree, CLIENTE* cliente)
 {
     boolean returnValue;
+    BT_NODE* arvoreCliente;
 
-    returnValue = _bt_remove_cliente(binaryTree, cliente);
-    bt_preordem(binaryTree);
+    returnValue = FALSE; // apenas um else estruturado sem condicionais
+
+    if (cliente != NULL) {
+        arvoreCliente = bt_node_criar(cliente);
+    }
+
+    if (binaryTree != NULL) {
+        if (binaryTree -> _raiz != NULL){
+            returnValue = bt_node_insere_cliente(binaryTree -> _raiz, arvoreCliente);
+            bt_preordem(binaryTree -> _raiz);
+        } else if (binaryTree -> _raiz != NULL && arvoreCliente != NULL) {
+            binaryTree ->_raiz = arvoreCliente;
+            returnValue = TRUE;
+        }
+    }
 
     return returnValue;
 }
 
-CLIENTE* bt_busca(BT* binaryTree, BIGNUMBER* cpf)
+boolean bt_remove_cliente(BT* binaryTree, char cpf[15])
 {
-    CLIENTE* nodeAtual;
-    if (binaryTree != NULL && cpf != NULL) {
-        nodeAtual = binaryTree -> _cliente ;
-        if (bignumber_igual( cliente_get_cpf(nodeAtual), cpf) )
-        {
-            return nodeAtual;
-        } else if (bignumber_maior_que( cliente_get_cpf(nodeAtual), cpf)) {
-            return bt_busca(binaryTree -> _galhoDireito, cpf);
-        } else {
-            return bt_busca(binaryTree -> _galhoEsquerdo, cpf);
-        }
-    } else {
-        return NULL;
-    }
+    boolean returnValue;
+    BIGNUMBER* cpfBigNumber;
+    cpfBigNumber = bignumber_criar();
+    bignumber_add_numero(cpfBigNumber, treat_cpf(cpf));
+
+
+    returnValue = _bt_node_remove_cliente(binaryTree -> _raiz, cpfBigNumber);
+    bt_preordem(binaryTree -> _raiz);
+
+    return returnValue;
+}
+void bt_busca(BT* binaryTree, char cpf[15])
+{
+    BIGNUMBER* cpfBigNumber;
+    cpfBigNumber = bignumber_criar();
+    bignumber_add_numero(cpfBigNumber, treat_cpf(cpf));
+
+    _bt_node_busca(binaryTree -> _raiz, cpfBigNumber);
+
 }

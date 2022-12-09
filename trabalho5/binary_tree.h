@@ -4,9 +4,12 @@
 #include "utils.h"
 #include "cliente.h"
 
+typedef struct BinaryTreeNode BT_NODE;
 typedef struct BinaryTree BT;
-BT* binarytree_criar(CLIENTE* cliente);
-boolean binarytree_apagar(BT **binaryTree);
-boolean binarytree_atribuir_esquerda(BT* binaryTree, BT* arvoreEsquerda);
-boolean binarytree_insere_filha(BT* binaryTree, BT* arvoreFilha);
+
+BT* bt_criar();
+boolean bt_apagar(BT** binaryTree);
+boolean bt_insere_cliente(BT* binaryTree, CLIENTE* cliente);
+boolean bt_remove_cliente(BT* binaryTree, char cpf[15]);
+void bt_busca(BT* binaryTree, char cpf[15]);
 #endif
