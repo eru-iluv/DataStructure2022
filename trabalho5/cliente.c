@@ -8,6 +8,7 @@
 struct Cliente
 {
     BIGNUMBER* _cpf;
+    char _cpfFormatado[15];
     char* _nome;
     int _idade;
     float _saldo;
@@ -32,6 +33,7 @@ CLIENTE* cliente_criar(char cpf[15], char* nome, int idade, float saldo)
         bignumber_add_numero(bigNumberCpf, treatedCpf);
 
         cliente -> _cpf = bigNumberCpf;
+        strcpy(cliente ->_cpfFormatado, cpf);
         cliente -> _idade = idade;
         cliente -> _saldo = saldo;
         cliente -> _nome = (char*) malloc(sizeof(nome));
@@ -68,8 +70,7 @@ void print_cliente(CLIENTE* cliente)
 {
     if (cliente != NULL) {
         printf("Conta :: %s\n", cliente -> _nome);
-        printf("CPF :: ");
-        bignumber_print(cliente -> _cpf);
+        printf("CPF :: %s\n", cliente -> _cpfFormatado);
         printf("Idade :: %d\n", cliente -> _idade);
         printf("Saldo atual :: %f", cliente -> _saldo);
     }
