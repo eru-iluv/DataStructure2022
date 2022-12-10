@@ -10,6 +10,6 @@ typedef struct BinaryTree BT;
 BT* bt_criar();
 boolean bt_apagar(BT** binaryTree);
 boolean bt_insere_cliente(BT* binaryTree, CLIENTE* cliente);
-boolean bt_remove_cliente(BT* binaryTree, char cpf[15]);
-void bt_busca(BT* binaryTree, char cpf[15]);
+boolean bt_remove_cliente(BT* binaryTree, char cpf[14]);
+void bt_busca(BT* binaryTree, char cpf[14]);
 #endif

@@ -1,5 +1,4 @@
 #include "utils.h"
-#include "big_numbers.h"
 #include "cliente.h"
 
 #include <stdlib.h>
@@ -7,38 +6,30 @@
 
 struct Cliente
 {
-    BIGNUMBER* _cpf;
-    char _cpfFormatado[15];
+    char _cpf[11];
+    char _cpfFormatado[14];
     char* _nome;
     int _idade;
     float _saldo;
 };
 
-CLIENTE* cliente_criar(char cpf[15], char* nome, int idade, float saldo)
+CLIENTE* cliente_criar(char cpf[14], char* nome, int idade, float saldo)
 {
     CLIENTE* cliente;
-    char* treatedCpfPointer;
-    char treatedCpf[11];
-    BIGNUMBER* bigNumberCpf;
-
+    char* pointerCpfTratado;
 
     cliente = (CLIENTE*) malloc(sizeof(CLIENTE));
     if (cliente != NULL) {
 
-        treatedCpfPointer = treat_cpf(cpf);
-        strcpy(treatedCpf, treatedCpfPointer);
-        free(treatedCpfPointer);
-
-        bigNumberCpf = bignumber_criar();
-        bignumber_add_numero(bigNumberCpf, treatedCpf);
-
-        cliente -> _cpf = bigNumberCpf;
+        pointerCpfTratado = treat_cpf(cpf);
+        strcpy(cliente -> _cpf, pointerCpfTratado);
         strcpy(cliente ->_cpfFormatado, cpf);
         cliente -> _idade = idade;
         cliente -> _saldo = saldo;
-        cliente -> _nome = (char*) malloc(sizeof(nome));
+        cliente -> _nome = (char*) malloc((strlen(nome) + 1)* sizeof(char));
         strcpy(cliente -> _nome, nome);
 
+        free(pointerCpfTratado);
         return cliente;
     }
     return NULL;
@@ -55,7 +46,7 @@ boolean cliente_apagar(CLIENTE **cliente)
     return FALSE;
 }
 
-BIGNUMBER* cliente_get_cpf(CLIENTE* cliente)
+char* cliente_get_cpf(CLIENTE* cliente)
 {
     return cliente -> _cpf;
 }

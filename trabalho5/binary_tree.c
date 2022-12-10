@@ -1,7 +1,7 @@
-#include "big_numbers.h"
 #include "cliente.h"
 #include "binary_tree.h"
 #include "utils.h"
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -57,8 +57,7 @@ boolean bt_node_apagar(BT_NODE** binaryTree)
 void bt_preordem(BT_NODE* binaryTree)
 {
     if (binaryTree != NULL) {
-        BIGNUMBER* cpf = cliente_get_cpf(binaryTree -> _cliente);
-        bignumber_print(cpf);
+        printf("%s\n", cliente_get_cpf(binaryTree -> _cliente));
 
         bt_preordem(binaryTree -> _galhoEsquerdo);
         bt_preordem(binaryTree -> _galhoDireito);
@@ -81,17 +80,17 @@ boolean galho_apagar(BT_NODE** binaryTree)
 
 boolean bt_node_insere_cliente(BT_NODE* binaryTree, BT_NODE* arvoreCliente)
 {
-    BIGNUMBER* nodeAtualCpf;
-    BIGNUMBER* clienteCpf;
+    char nodeAtualCpf[11];
+    char clienteCpf[11];
 
     if (binaryTree != NULL && binaryTree -> _cliente != NULL && arvoreCliente -> _cliente != NULL) {
 
-        nodeAtualCpf = cliente_get_cpf(binaryTree -> _cliente);
-        clienteCpf =  cliente_get_cpf(arvoreCliente -> _cliente);
+        strcpy(nodeAtualCpf, cliente_get_cpf(binaryTree -> _cliente));
+        strcpy(clienteCpf,  cliente_get_cpf(arvoreCliente -> _cliente));
 
-        if (bignumber_maior_que(nodeAtualCpf, clienteCpf)) {
+        if (cpf_maior(nodeAtualCpf, clienteCpf)) {
             return bt_node_insere_cliente(binaryTree -> _galhoEsquerdo, arvoreCliente);
-        } else if (bignumber_igual(nodeAtualCpf, clienteCpf)) {
+        } else if (cpf_igual(nodeAtualCpf, clienteCpf)) {
             return FALSE;
         } else {
             return bt_node_insere_cliente(binaryTree -> _galhoDireito, arvoreCliente);
@@ -107,23 +106,23 @@ boolean bt_node_insere_cliente(BT_NODE* binaryTree, BT_NODE* arvoreCliente)
 }
 
 
-boolean _bt_node_remove_cliente(BT_NODE* binaryTree, BIGNUMBER* cpf)
+boolean _bt_node_remove_cliente(BT_NODE* binaryTree, char cpf[11])
 {
-    BIGNUMBER* nodeAtualCpf;
+    char nodeAtualCpf[11];
     BT_NODE* galhoEsquerdo;
     BT_NODE* galhoDireito;
 
     if (binaryTree != NULL && binaryTree -> _cliente != NULL && cpf != NULL) {
 
-        nodeAtualCpf = cliente_get_cpf(binaryTree -> _cliente);
+        strcpy(nodeAtualCpf, cliente_get_cpf(binaryTree -> _cliente));
 
         // A ordem pode parecer estranha
-        // mas se deve ao fato de bignumber_menor_que basicamente chamar
-        // essas duas funções
-        if (bignumber_maior_que(nodeAtualCpf, cpf)) {
+        // mas se deve ao fato de cpf_menor basicamente chamar
+        // as duas primeiras funções
+        if (cpf_maior(nodeAtualCpf, cpf)) {
             return _bt_node_remove_cliente(binaryTree -> _galhoEsquerdo, cpf);
 
-        } else if (bignumber_igual(nodeAtualCpf, cpf)) {
+        } else if (cpf_igual(nodeAtualCpf, cpf)) {
 
             galhoEsquerdo = binaryTree -> _galhoEsquerdo;
             galhoDireito = binaryTree -> _galhoDireito;
@@ -140,15 +139,15 @@ boolean _bt_node_remove_cliente(BT_NODE* binaryTree, BIGNUMBER* cpf)
 }
 
 
-void _bt_node_busca(BT_NODE* binaryTree, BIGNUMBER* cpf)
+void _bt_node_busca(BT_NODE* binaryTree, char cpf[11])
 {
     CLIENTE* clienteAtual;
     if (binaryTree != NULL && cpf != NULL) {
         clienteAtual = binaryTree -> _cliente ;
-        if (bignumber_igual( cliente_get_cpf(clienteAtual), cpf) )
+        if (cpf_igual( cliente_get_cpf(clienteAtual), cpf) )
         {
             print_cliente(clienteAtual);
-        } else if (bignumber_maior_que( cliente_get_cpf(clienteAtual), cpf)) {
+        } else if (cpf_maior( cliente_get_cpf(clienteAtual), cpf)) {
             _bt_node_busca(binaryTree -> _galhoDireito, cpf);
         } else {
             _bt_node_busca(binaryTree -> _galhoEsquerdo, cpf);
@@ -197,25 +196,29 @@ boolean bt_insere_cliente(BT* binaryTree, CLIENTE* cliente)
     return returnValue;
 }
 
-boolean bt_remove_cliente(BT* binaryTree, char cpf[15])
+boolean bt_remove_cliente(BT* binaryTree, char cpf[14])
 {
-    boolean returnValue;
-    BIGNUMBER* cpfBigNumber;
-    cpfBigNumber = bignumber_criar();
-    bignumber_add_numero(cpfBigNumber, treat_cpf(cpf));
+    // boolean returnValue;
+    // char* pointerCpfTratado;
+    // char cpfTratado[11];
 
+//    pointerCpfTratado = treat_cpf(cpf);
+//    strcpy(cpfTratado, pointerCpfTratado);
+//    free(pointerCpfTratado);
 
-    returnValue = _bt_node_remove_cliente(binaryTree -> _raiz, cpfBigNumber);
+//    returnValue = _bt_node_remove_cliente(binaryTree -> _raiz, cpf);
     bt_preordem(binaryTree -> _raiz);
-
-    return returnValue;
+    return TRUE;
+//    return returnValue;
 }
-void bt_busca(BT* binaryTree, char cpf[15])
+void bt_busca(BT* binaryTree, char cpf[14])
 {
-    BIGNUMBER* cpfBigNumber;
-    cpfBigNumber = bignumber_criar();
-    bignumber_add_numero(cpfBigNumber, treat_cpf(cpf));
+    char* pointerCpfTratado;
+    char cpfTratado[11];
 
-    _bt_node_busca(binaryTree -> _raiz, cpfBigNumber);
+    pointerCpfTratado = treat_cpf(cpf);
+    strcpy(cpfTratado, pointerCpfTratado);
+    free(pointerCpfTratado);
 
+    _bt_node_busca(binaryTree -> _raiz, cpf);
 }

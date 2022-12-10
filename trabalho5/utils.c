@@ -72,19 +72,52 @@ void print_n_times(char *str, int N)
     }
 }
 
-char* treat_cpf(char cpf[15])
+char* treat_cpf(char cpf[14])
 {
-    char* cpf_tratado = (char*) malloc(11*sizeof(char));
+    char* cpfTratado = (char*) malloc(12*sizeof(char));
 
     int i = 0;
     int j = 0;
     while (cpf[i] != '\0') {
         if (48 <= cpf[i] && cpf[i] <= 57 ) {
-            cpf_tratado[j] = cpf[i];
+            cpfTratado[j] = cpf[i];
             j++;
         }
         i++;
     }
+    return cpfTratado;
+}
 
-    return cpf_tratado;
+
+boolean cpf_igual(char cpf1[11], char cpf2[11])
+{
+    if (!strcmp(cpf1, cpf2)) {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+boolean _cpf_maior(char cpf1[11], char cpf2[11], int posicao)
+{
+    if (cpf1[posicao] == '\0') {
+        return FALSE;
+    } else {
+        if (cpf1[posicao] > cpf2[posicao]) {
+            return TRUE;
+        } else if (cpf1[posicao] == cpf2[posicao]) {
+            return _cpf_maior(cpf1, cpf2, posicao + 1);
+        } else {
+            return FALSE;
+        }
+    }
+}
+
+boolean cpf_maior(char cpf1[11], char cpf2[11])
+{
+    return _cpf_maior(cpf1, cpf2, 0);
+}
+
+boolean cpf_menor(char cpf1[11], char cpf2[11])
+{
+    return !(cpf_maior(cpf1, cpf2) || cpf_menor(cpf1, cpf2));
 }

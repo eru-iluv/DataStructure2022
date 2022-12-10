@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "big_numbers.h"
 #include "binary_tree.h"
 
 int main()
@@ -15,7 +14,7 @@ int main()
     numeroClientes = atoi(ponteiro);
     free(ponteiro);
 
-    char cpf[15];
+    char cpf[14];
     char* nome;
     int idade;
     float saldo;
@@ -30,8 +29,10 @@ int main()
         nome = strtok(NULL, ";");
         idade = atoi(strtok(NULL, ";"));
         saldo = atof(strtok(NULL, ";"));
+        
 
         clienteAtual = cliente_criar(cpf, nome, idade, saldo);
+
         bt_insere_cliente(binaryTree, clienteAtual);
 
 
