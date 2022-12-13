@@ -72,9 +72,9 @@ void print_n_times(char *str, int N)
     }
 }
 
-char* treat_cpf(char cpf[14])
+void print_treated_cpf(char cpf[15])
 {
-    char* cpfTratado = (char*) malloc(12*sizeof(char));
+    char cpfTratado[12] = "00000000000";
 
     int i = 0;
     int j = 0;
@@ -85,11 +85,11 @@ char* treat_cpf(char cpf[14])
         }
         i++;
     }
-    return cpfTratado;
+    printf("%s\n", cpfTratado);
 }
 
 
-boolean cpf_igual(char cpf1[11], char cpf2[11])
+boolean cpf_igual(char cpf1[15], char cpf2[15])
 {
     if (!strcmp(cpf1, cpf2)) {
         return TRUE;
@@ -97,7 +97,7 @@ boolean cpf_igual(char cpf1[11], char cpf2[11])
     return FALSE;
 }
 
-boolean _cpf_maior(char cpf1[11], char cpf2[11], int posicao)
+boolean _cpf_maior(char cpf1[15], char cpf2[15], int posicao)
 {
     if (cpf1[posicao] == '\0') {
         return FALSE;
@@ -112,12 +112,12 @@ boolean _cpf_maior(char cpf1[11], char cpf2[11], int posicao)
     }
 }
 
-boolean cpf_maior(char cpf1[11], char cpf2[11])
+boolean cpf_maior(char cpf1[15], char cpf2[15])
 {
     return _cpf_maior(cpf1, cpf2, 0);
 }
 
-boolean cpf_menor(char cpf1[11], char cpf2[11])
+boolean cpf_menor(char cpf1[15], char cpf2[15])
 {
     return !(cpf_maior(cpf1, cpf2) || cpf_menor(cpf1, cpf2));
 }

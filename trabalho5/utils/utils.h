@@ -12,8 +12,8 @@ int power(int base, int expoente);
 boolean starts_with_a_minus(char *str);
 void print_boolean(boolean var);
 void print_n_times(char *str, int n);
-char* treat_cpf(char cpf[14]);
-boolean cpf_igual(char cpf1[11], char cpf2[11]);
-boolean cpf_menor(char cpf1[11], char cpf2[11]);
-boolean cpf_maior(char cpf1[11], char cpf2[11]);
+void print_treated_cpf(char cpf[15]);
+boolean cpf_igual(char cpf1[15], char cpf2[15]);
+boolean cpf_menor(char cpf1[15], char cpf2[15]);
+boolean cpf_maior(char cpf1[15], char cpf2[15]);
 #endif

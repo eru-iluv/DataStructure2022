@@ -1,9 +1,9 @@
-#include "cliente.h"
-#include "utils.h"
+#include "cliente/cliente.h"
+#include "utils/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "binary_tree.h"
+#include "binary_tree/binary_tree.h"
 
 int main()
 {
@@ -13,8 +13,7 @@ int main()
     ponteiro = read_line();
     numeroClientes = atoi(ponteiro);
     free(ponteiro);
-
-    char cpf[14];
+    char cpf[15];
     char* nome;
     int idade;
     float saldo;
@@ -30,43 +29,42 @@ int main()
         idade = atoi(strtok(NULL, ";"));
         saldo = atof(strtok(NULL, ";"));
         
-
         clienteAtual = cliente_criar(cpf, nome, idade, saldo);
-
         bt_insere_cliente(binaryTree, clienteAtual);
-
+        free(ponteiro);
 
     }
-
-    scanf("%c", ponteiro);
+    ponteiro = read_line();
 
     if (*ponteiro == 'B'){
         scanf("%s", cpf);
-        free(ponteiro);
         bt_busca(binaryTree, cpf);
 
     } else if (*ponteiro == 'R') {
-        scanf("%s", cpf);
-        free(ponteiro);
+        scanf("%s", cpf);;
         bt_remove_cliente(binaryTree, cpf);
+        bt_preordem(binaryTree);
 
     } else if (*ponteiro == 'I') {
-        free(ponteiro);
         CLIENTE* clienteInserido;
-
-        ponteiro = read_line();
-        strcpy(cpf, strtok(ponteiro, ";"));
+        char* linha = read_line(); 
+        // ponteiro = read_line();
+        strcpy(cpf, strtok(linha, ";"));
         nome = strtok(NULL, ";");
         idade = atoi(strtok(NULL, ";"));
         saldo = atof(strtok(NULL, ";"));
 
         clienteInserido = cliente_criar(cpf, nome, idade, saldo);
-        free(ponteiro);
 
         bt_insere_cliente(binaryTree, clienteInserido);
+        bt_preordem(binaryTree);
+
+
+        free(linha);
     }
 
-
-
+    printf("\n");
+    free(ponteiro);
+    bt_apagar(&binaryTree);
     return 0;
 }

@@ -1,7 +1,7 @@
 
 # -*-Makefile-*-
 
-UTIL = utils.c binary_tree.c cliente.c
+UTIL = utils/utils.c binary_tree/binary_tree.c cliente/cliente.c
 MAIN = main.c
 BINARY = executavel
 

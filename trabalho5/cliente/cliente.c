@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "../utils/utils.h"
 #include "cliente.h"
 
 #include <stdlib.h>
@@ -6,30 +6,25 @@
 
 struct Cliente
 {
-    char _cpf[11];
-    char _cpfFormatado[14];
+    char _cpf[15];
     char* _nome;
     int _idade;
     float _saldo;
 };
 
-CLIENTE* cliente_criar(char cpf[14], char* nome, int idade, float saldo)
+CLIENTE* cliente_criar(char cpf[15], char* nome, int idade, float saldo)
 {
     CLIENTE* cliente;
-    char* pointerCpfTratado;
 
     cliente = (CLIENTE*) malloc(sizeof(CLIENTE));
     if (cliente != NULL) {
 
-        pointerCpfTratado = treat_cpf(cpf);
-        strcpy(cliente -> _cpf, pointerCpfTratado);
-        strcpy(cliente ->_cpfFormatado, cpf);
+        strcpy(cliente -> _cpf, cpf);
         cliente -> _idade = idade;
         cliente -> _saldo = saldo;
         cliente -> _nome = (char*) malloc((strlen(nome) + 1)* sizeof(char));
         strcpy(cliente -> _nome, nome);
 
-        free(pointerCpfTratado);
         return cliente;
     }
     return NULL;
@@ -38,6 +33,7 @@ CLIENTE* cliente_criar(char cpf[14], char* nome, int idade, float saldo)
 boolean cliente_apagar(CLIENTE **cliente)
 {
     if (*cliente != NULL) {
+        free((*cliente) -> _nome);
         free(*cliente);
         *cliente = NULL;
         return TRUE;
@@ -55,8 +51,8 @@ void print_cliente(CLIENTE* cliente)
 {
     if (cliente != NULL) {
         printf("Conta :: %s\n", cliente -> _nome);
-        printf("CPF :: %s\n", cliente -> _cpfFormatado);
+        printf("CPF :: %s\n", cliente -> _cpf);
         printf("Idade :: %d\n", cliente -> _idade);
-        printf("Saldo atual :: %f", cliente -> _saldo);
+        printf("Saldo atual :: R$ %0.2f\n", cliente -> _saldo);
     }
 }
