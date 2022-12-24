@@ -4,26 +4,21 @@
 #include "../grafo/grafo.h"
 #include "../utils/utils.h"
 
-boolean vertice_iguais(VERTICE v1, VERTICE v2)
-{
-    if (v1.x == v2.x && v1.y == v2.y){
-        return TRUE;
-    }
-    return FALSE;
-}
-
-
-typedef struct Cidade CIDADE;
+typedef struct VERTICE CIDADE;
 typedef struct MalhaLogistica ML;
 
 ML* ml_criar(int nVertices);
 void ml_apagar(ML** ml);
 
-boolean ml_add_cidade(VERTICE, ML* ml);
+boolean ml_add_cidade(CIDADE cidade, ML* malha);
+boolean ml_add_rota(CIDADE origem, CIDADE destino, ML* malha);
+boolean ml_remove_rota(CIDADE origem, CIDADE destino, ML* malha);
 
-boolean ml_add_(VERTICE fonte, VERTICE pia, int peso, GRAFO* grafo);
-boolean ml_remove_aresta(VERTICE fonte, VERTICE pia);
+boolean ml_floyd_warshall(ML* malha);
+CIDADE ml_get_mais_central(ML* malha);
+CIDADE ml_get_mais_periferica(ML *malha);
+CIDADE ml_get_mais_distante_da_periferia(ML* malha);
 
-bo
-
+void print_cidade(CIDADE cidade);
+void print_malha(ML* malha);
 #endif

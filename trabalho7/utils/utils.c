@@ -3,19 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
-struct Vertice
-{
-    int x;
-    int y;
-};
 
-boolean vertice_iguais(VERTICE v1, VERTICE v2)
-{
-    if (v1.x == v2.x && v1.y == v2.y){
-        return TRUE;
-    }
-    return FALSE;
-}
 
 char *read_line()
 {
@@ -86,52 +74,43 @@ void print_n_times(char *str, int N)
     }
 }
 
-void print_treated_cpf(char cpf[15])
+// minimo entre 'a' e 'b'... para floats!!
+float minf(float a, float b)
 {
-    char cpfTratado[12] = "00000000000";
-
-    int i = 0;
-    int j = 0;
-    while (cpf[i] != '\0') {
-        if (48 <= cpf[i] && cpf[i] <= 57 ) {
-            cpfTratado[j] = cpf[i];
-            j++;
-        }
-        i++;
+    if (a < b) {
+        return a;
     }
-    printf("%s\n", cpfTratado);
+    return b;
 }
 
-
-boolean cpf_igual(char cpf1[15], char cpf2[15])
+int min_vetor_f(float* vetor, int tamanhoVetor)
 {
-    if (!strcmp(cpf1, cpf2)) {
-        return TRUE;
+    if (vetor == NULL) return ERRO_GENERICO;
+
+    int indiceMenor = 0;
+    if (vetor[indiceMenor] == 0) {
+        indiceMenor++;
     }
-    return FALSE;
-}
 
-boolean _cpf_maior(char cpf1[15], char cpf2[15], int posicao)
-{
-    if (cpf1[posicao] == '\0') {
-        return FALSE;
-    } else {
-        if (cpf1[posicao] > cpf2[posicao]) {
-            return TRUE;
-        } else if (cpf1[posicao] == cpf2[posicao]) {
-            return _cpf_maior(cpf1, cpf2, posicao + 1);
-        } else {
-            return FALSE;
+    for (int i = 1; i < tamanhoVetor; i++) {
+        if (vetor[indiceMenor] > vetor[i] && vetor[i] != 0) {
+            indiceMenor = i;
         }
     }
+    return indiceMenor;
 }
 
-boolean cpf_maior(char cpf1[15], char cpf2[15])
+int max_vetor_f(float* vetor, int tamanhoVetor)
 {
-    return _cpf_maior(cpf1, cpf2, 0);
-}
 
-boolean cpf_menor(char cpf1[15], char cpf2[15])
-{
-    return !(cpf_maior(cpf1, cpf2) || cpf_menor(cpf1, cpf2));
+    if (vetor == NULL) return ERRO_GENERICO;
+
+    int indiceMaior = 0;
+
+    for (int i = 1; i < tamanhoVetor; i++) {
+        if (vetor[i] > vetor[indiceMaior]) {
+            indiceMaior = i;
+        }
+    }
+    return indiceMaior;
 }
